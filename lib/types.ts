@@ -25,6 +25,20 @@ export interface ChatMessage {
     metadata?: any;
 }
 
+export interface Enemy {
+    id: string;
+    name: string;
+    hp: number;
+    maxHp: number;
+    status: 'alive' | 'defeated';
+}
+
+export interface CombatState {
+    isActive: boolean;
+    enemies: Enemy[];
+    turn: number;
+}
+
 export interface GameState {
     character: Character | null;
     inventory: string[];
@@ -33,4 +47,5 @@ export interface GameState {
     time: string;
     scenarioId?: string; // Which scenario was selected
     scenarioAtmosphere?: string; // For AI context about the setting
+    combat: CombatState;
 }

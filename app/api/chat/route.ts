@@ -30,6 +30,11 @@ export async function POST(req: Request) {
        - [GOLD:n] -> Add/subtract Gold (e.g., [GOLD:100], [GOLD:-50]).
        - [ITEM:add:name] -> Add item to inventory (e.g., [ITEM:add:Potion of Healing]).
        - [ITEM:remove:name] -> Remove item (e.g., [ITEM:remove:Rusty Key]).
+       - [COMBAT:START] -> Start combat mode.
+       - [COMBAT:END] -> End combat mode.
+       - [ENEMY:NEW:Name:HP] -> Add enemy (e.g., [ENEMY:NEW:Goblin:7]).
+       - [ENEMY:DMG:Name:Amount] -> Damage enemy (e.g., [ENEMY:DMG:Goblin:3]).
+       - [ENEMY:DEFEATED:Name] -> Mark enemy as defeated.
     
     Current Game State:
     ${JSON.stringify(gameState)}`;

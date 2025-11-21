@@ -69,6 +69,11 @@ export default function CharacterCreation() {
             time: scenario.timeOfDay,
             scenarioId: scenario.id,
             scenarioAtmosphere: scenario.atmosphere,
+            combat: {
+                isActive: false,
+                enemies: [],
+                turn: 1
+            }
         });
 
         addMessage({

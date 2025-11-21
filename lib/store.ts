@@ -19,6 +19,12 @@ interface GameStore {
     isGameStarted: boolean;
     startGame: () => void;
     resetGame: () => void;
+    // Combat Actions
+    startCombat: () => void;
+    endCombat: () => void;
+    addEnemy: (name: string, hp: number) => void;
+    damageEnemy: (name: string, amount: number) => void;
+    defeatEnemy: (name: string) => void;
 }
 
 const initialState = {
@@ -28,6 +34,11 @@ const initialState = {
         gold: 0,
         location: "Unknown",
         time: "Day",
+        combat: {
+            isActive: false,
+            enemies: [],
+            turn: 1
+        }
     },
     messages: [],
     isGameStarted: false,
@@ -119,9 +130,77 @@ export const useGameStore = create<GameStore>()(
             startGame: () => set({ isGameStarted: true }),
 
             resetGame: () => {
-                console.log('[Storage] Resetting game state');
+                localStorage.removeItem('dnd-game-save');
                 set(initialState);
             },
+
+            // Combat Actions
+            startCombat: () =>
+                set((state) => ({
+                    gameState: {
+                        ...state.gameState,
+                        combat: { isActive: true, enemies: [], turn: 1 }
+                    }
+                })),
+
+            endCombat: () =>
+                set((state) => ({
+                    gameState: {
+                        ...state.gameState,
+                        combat: { isActive: false, enemies: [], turn: 1 }
+                    }
+                })),
+
+            addEnemy: (name, hp) =>
+                set((state) => ({
+                    gameState: {
+                        ...state.gameState,
+                        combat: {
+                            ...state.gameState.combat,
+                            isActive: true, // Ensure combat is active when enemy added
+                            enemies: [
+                                ...state.gameState.combat.enemies,
+                                {
+                                    id: Math.random().toString(36).substr(2, 9),
+                                    name,
+                                    hp,
+                                    maxHp: hp,
+                                    status: 'alive'
+                                }
+                            ]
+                        }
+                    }
+                })),
+
+            damageEnemy: (name, amount) =>
+                set((state) => ({
+                    gameState: {
+                        ...state.gameState,
+                        combat: {
+                            ...state.gameState.combat,
+                            enemies: state.gameState.combat.enemies.map(e =>
+                                e.name.toLowerCase().includes(name.toLowerCase()) || name.toLowerCase().includes(e.name.toLowerCase())
+                                    ? { ...e, hp: Math.max(0, e.hp - amount) }
+                                    : e
+                            )
+                        }
+                    }
+                })),
+
+            defeatEnemy: (name) =>
+                set((state) => ({
+                    gameState: {
+                        ...state.gameState,
+                        combat: {
+                            ...state.gameState.combat,
+                            enemies: state.gameState.combat.enemies.map(e =>
+                                e.name.toLowerCase().includes(name.toLowerCase()) || name.toLowerCase().includes(e.name.toLowerCase())
+                                    ? { ...e, hp: 0, status: 'defeated' }
+                                    : e
+                            )
+                        }
+                    }
+                })),
         }),
         {
             name: 'dnd-game-save',

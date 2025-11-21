@@ -115,6 +115,41 @@ export default function ChatInterface() {
                     removeItem(itemRemoveMatch[1]);
                     parsedTags.add(itemRemoveMatch[0]);
                 }
+
+                // Combat Start
+                const combatStartMatch = aiContent.match(/\[COMBAT:START\]/);
+                if (combatStartMatch && !parsedTags.has(combatStartMatch[0])) {
+                    useGameStore.getState().startCombat();
+                    parsedTags.add(combatStartMatch[0]);
+                }
+
+                // Combat End
+                const combatEndMatch = aiContent.match(/\[COMBAT:END\]/);
+                if (combatEndMatch && !parsedTags.has(combatEndMatch[0])) {
+                    useGameStore.getState().endCombat();
+                    parsedTags.add(combatEndMatch[0]);
+                }
+
+                // Enemy New: [ENEMY:NEW:Name:HP]
+                const enemyNewMatch = aiContent.match(/\[ENEMY:NEW:([^:]+):(\d+)\]/);
+                if (enemyNewMatch && !parsedTags.has(enemyNewMatch[0])) {
+                    useGameStore.getState().addEnemy(enemyNewMatch[1], parseInt(enemyNewMatch[2]));
+                    parsedTags.add(enemyNewMatch[0]);
+                }
+
+                // Enemy Damage: [ENEMY:DMG:Name:Amount]
+                const enemyDmgMatch = aiContent.match(/\[ENEMY:DMG:([^:]+):(\d+)\]/);
+                if (enemyDmgMatch && !parsedTags.has(enemyDmgMatch[0])) {
+                    useGameStore.getState().damageEnemy(enemyDmgMatch[1], parseInt(enemyDmgMatch[2]));
+                    parsedTags.add(enemyDmgMatch[0]);
+                }
+
+                // Enemy Defeated: [ENEMY:DEFEATED:Name]
+                const enemyDefeatedMatch = aiContent.match(/\[ENEMY:DEFEATED:([^\]]+)\]/);
+                if (enemyDefeatedMatch && !parsedTags.has(enemyDefeatedMatch[0])) {
+                    useGameStore.getState().defeatEnemy(enemyDefeatedMatch[1]);
+                    parsedTags.add(enemyDefeatedMatch[0]);
+                }
             }
         } catch (error) {
             console.error("AI Error:", error);
