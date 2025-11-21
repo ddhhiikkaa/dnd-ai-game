@@ -37,6 +37,15 @@
   --radius-md: 12px;
   --radius-lg: 24px;
   --radius-full: 9999px;
+
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 5, 5, 10;
+  --background-end-rgb: 10, 10, 20;
+
+  /* Fantasy Colors */
+  --color-gold: #ffd700;
+  --color-purple: #8a2be2;
+  --color-border: rgba(255, 215, 0, 0.1);
 }
 
 * {
@@ -45,14 +54,22 @@
   margin: 0;
 }
 
+html,
 body {
-  background-color: #000;
-  background-image:
-    radial-gradient(circle at 50% 0%, #2a1b3d 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, #1a1a2e 0%, transparent 40%);
-  background-attachment: fixed;
-  color: var(--color-text-primary);
-  font-family: var(--font-body);
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: fixed;
+  /* Prevent bounce/scroll on iOS */
+  inset: 0;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+  font-family: var(--font-inter), sans-serif;
   line-height: 1.6;
   overflow-x: hidden;
 }
