@@ -1,44 +1,36 @@
-import { openai } from '@ai-sdk/openai';
-import { streamText } from 'ai';
+import { openai } from "@ai-sdk/openai";
+import { streamText } from "ai";
+import { GameState } from "@/lib/types";
 
-// Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-    const { messages, gameState } = await req.json();
+  const { messages, gameState }: { messages: any[]; gameState: GameState } =
+    await req.json();
 
-    const systemPrompt = `
-    You are the Dungeon Master for a Dungeons & Dragons 5th Edition game.
+  const systemPrompt = `You are the Dungeon Master for a D&D 5e game. 
+    Your goal is to run an immersive, open-ended adventure.
+    
+    RULES:
+    1. You describe the world, NPCs, and outcomes of actions.
+    2. You NEVER speak for the player's character.
+    3. If the player attempts an action with a chance of failure, ask for a roll using the tag [ROLL:dice_notation:reason]. Example: [ROLL:1d20:Strength Check].
+    4. Keep descriptions concise (2-3 sentences) but evocative.
+    5. Manage the player's state using these tags at the end of your response:
+       - [HP:n] -> Add/subtract HP (e.g., [HP:-5] for damage, [HP:10] for healing).
+       - [XP:n] -> Give XP (e.g., [XP:50]).
+       - [GOLD:n] -> Add/subtract Gold (e.g., [GOLD:100], [GOLD:-50]).
+       - [ITEM:add:name] -> Add item to inventory (e.g., [ITEM:add:Potion of Healing]).
+       - [ITEM:remove:name] -> Remove item (e.g., [ITEM:remove:Rusty Key]).
     
     Current Game State:
-    Character: ${JSON.stringify(gameState.character)}
-    
-    Your responsibilities:
-    1. Narrate the story vividly and concisely.
-    2. React to the player's actions.
-    3. Ask for dice rolls when the outcome is uncertain.
-    4. Manage combat and NPC interactions.
-    
-    IMPORTANT: When you need the player to roll dice, you MUST include a special tag at the end of your message in this format:
-    [ROLL:dice_notation:reason]
-    
-    Examples:
-    - "The door is stuck. Give me a Strength check. [ROLL:1d20:Strength Check]"
-    - "The goblin attacks! Roll for initiative. [ROLL:1d20:Initiative]"
-    - "You cast Fireball. Roll damage. [ROLL:8d6:Fireball Damage]"
-    
-    Rules:
-    - Keep responses short (2-3 paragraphs max) to fit mobile screens.
-    - Use bold text for important terms or emphasis.
-    - If a player wants to do something impossible, explain why.
-    - Be fair but challenging.
-  `;
+    ${JSON.stringify(gameState)}`;
 
-    const result = streamText({
-        model: openai('gpt-4o'),
-        system: systemPrompt,
-        messages,
-    });
+  const result = await streamText({
+    model: openai("gpt-4o"),
+    system: systemPrompt,
+    messages,
+  });
 
-    return result.toTextStreamResponse();
+  return result.toTextStreamResponse();
 }

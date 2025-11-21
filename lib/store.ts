@@ -1,45 +1,87 @@
 import { create } from 'zustand';
-import { GameState, Character, ChatMessage } from './types';
+import { GameState, ChatMessage } from './types';
 
-interface GameStore extends GameState {
-    character: Character | null;
+interface GameStore {
+    gameState: GameState;
     messages: ChatMessage[];
-    isGameStarted: boolean;
     pendingRoll: { dice: string; reason: string } | null;
-
-    setCharacter: (char: Character) => void;
-    addMessage: (msg: ChatMessage) => void;
-    updateMessage: (id: string, content: string) => void;
-    updateHp: (amount: number) => void;
     setPendingRoll: (roll: { dice: string; reason: string } | null) => void;
-    startGame: () => void;
+    setGameState: (state: GameState) => void;
+    addMessage: (message: ChatMessage) => void;
+    updateMessage: (id: string, content: string) => void;
+    updateHP: (amount: number) => void;
+    addXP: (amount: number) => void;
+    updateGold: (amount: number) => void;
+    addItem: (item: string) => void;
+    removeItem: (item: string) => void;
 }
 
 export const useGameStore = create<GameStore>((set) => ({
-    character: null,
+    gameState: {
+        character: null,
+        inventory: [],
+        gold: 0,
+        location: "Unknown",
+        time: "Day",
+    },
     messages: [],
-    isGameStarted: false,
     pendingRoll: null,
-
-    setCharacter: (char) => set({ character: char }),
-
-    addMessage: (msg) => set((state) => ({
-        messages: [...state.messages, msg]
-    })),
-
-    updateMessage: (id, content) => set((state) => ({
-        messages: state.messages.map((msg) =>
-            msg.id === id ? { ...msg, content } : msg
-        )
-    })),
-
-    updateHp: (amount) => set((state) => {
-        if (!state.character) return {};
-        const newHp = Math.min(state.character.maxHp, Math.max(0, state.character.hp + amount));
-        return { character: { ...state.character, hp: newHp } };
-    }),
-
     setPendingRoll: (roll) => set({ pendingRoll: roll }),
-
-    startGame: () => set({ isGameStarted: true }),
+    setGameState: (state) => set({ gameState: state }),
+    addMessage: (message) =>
+        set((state) => ({ messages: [...state.messages, message] })),
+    updateMessage: (id, content) =>
+        set((state) => ({
+            messages: state.messages.map((msg) =>
+                msg.id === id ? { ...msg, content } : msg
+            ),
+        })),
+    updateHP: (amount) =>
+        set((state) => {
+            if (!state.gameState.character) return state;
+            const newHP = Math.min(
+                state.gameState.character.maxHp,
+                Math.max(0, state.gameState.character.hp + amount)
+            );
+            return {
+                gameState: {
+                    ...state.gameState,
+                    character: { ...state.gameState.character, hp: newHP },
+                },
+            };
+        }),
+    addXP: (amount) =>
+        set((state) => {
+            if (!state.gameState.character) return state;
+            return {
+                gameState: {
+                    ...state.gameState,
+                    character: {
+                        ...state.gameState.character,
+                        xp: state.gameState.character.xp + amount,
+                    },
+                },
+            };
+        }),
+    updateGold: (amount) =>
+        set((state) => ({
+            gameState: {
+                ...state.gameState,
+                gold: Math.max(0, state.gameState.gold + amount),
+            },
+        })),
+    addItem: (item) =>
+        set((state) => ({
+            gameState: {
+                ...state.gameState,
+                inventory: [...state.gameState.inventory, item],
+            },
+        })),
+    removeItem: (item) =>
+        set((state) => ({
+            gameState: {
+                ...state.gameState,
+                inventory: state.gameState.inventory.filter((i) => i !== item),
+            },
+        })),
 }));

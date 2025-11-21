@@ -5,7 +5,18 @@ import { useGameStore } from '@/lib/store';
 import { ChatMessage } from '@/lib/types';
 
 export default function ChatInterface() {
-    const { messages, addMessage, updateMessage, setPendingRoll, pendingRoll } = useGameStore();
+    const {
+        messages,
+        addMessage,
+        updateMessage,
+        setPendingRoll,
+        pendingRoll,
+        updateHP,
+        addXP,
+        updateGold,
+        addItem,
+        removeItem
+    } = useGameStore();
     const [input, setInput] = useState('');
     const bottomRef = useRef<HTMLDivElement>(null);
     const isProcessingRef = useRef(false);
@@ -32,7 +43,7 @@ export default function ChatInterface() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     messages: currentMessages.map(m => ({ role: m.role, content: m.content })),
-                    gameState: useGameStore.getState()
+                    gameState: useGameStore.getState().gameState
                 }),
             });
 
@@ -58,11 +69,33 @@ export default function ChatInterface() {
 
                 updateMessage(aiMsgId, aiContent);
 
+                // Parse Roll Tags
                 const rollMatch = aiContent.match(/\[ROLL:([^:]+):([^\]]+)\]/);
                 if (rollMatch) {
                     const [, dice, reason] = rollMatch;
                     setPendingRoll({ dice, reason });
                 }
+
+                // Parse Stat Updates
+                // HP
+                const hpMatch = chunk.match(/\[HP:(-?\d+)\]/);
+                if (hpMatch) updateHP(parseInt(hpMatch[1]));
+
+                // XP
+                const xpMatch = chunk.match(/\[XP:(\d+)\]/);
+                if (xpMatch) addXP(parseInt(xpMatch[1]));
+
+                // Gold
+                const goldMatch = chunk.match(/\[GOLD:(-?\d+)\]/);
+                if (goldMatch) updateGold(parseInt(goldMatch[1]));
+
+                // Item Add
+                const itemAddMatch = chunk.match(/\[ITEM:add:([^\]]+)\]/);
+                if (itemAddMatch) addItem(itemAddMatch[1]);
+
+                // Item Remove
+                const itemRemoveMatch = chunk.match(/\[ITEM:remove:([^\]]+)\]/);
+                if (itemRemoveMatch) removeItem(itemRemoveMatch[1]);
             }
         } catch (error) {
             console.error("AI Error:", error);
@@ -101,6 +134,14 @@ export default function ChatInterface() {
                     const isUser = msg.role === 'user';
                     const isRoll = msg.type === 'roll';
 
+                    // Clean content of all tags
+                    const cleanContent = msg.content
+                        .replace(/\[ROLL:.*?\]/g, '')
+                        .replace(/\[HP:.*?\]/g, '')
+                        .replace(/\[XP:.*?\]/g, '')
+                        .replace(/\[GOLD:.*?\]/g, '')
+                        .replace(/\[ITEM:.*?\]/g, '');
+
                     return (
                         <div
                             key={msg.id}
@@ -121,7 +162,7 @@ export default function ChatInterface() {
                                     }`}
                             >
                                 {isRoll && <span className="mr-2 text-lg">🎲</span>}
-                                {msg.content.replace(/\[ROLL:.*?\]/g, '')}
+                                {cleanContent}
                             </div>
 
                             {isUser && (

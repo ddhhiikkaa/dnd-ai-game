@@ -3,12 +3,18 @@ export type Attribute = 'STR' | 'DEX' | 'CON' | 'INT' | 'WIS' | 'CHA';
 export interface Character {
     name: string;
     class: string;
-    level: number;
+    stats: {
+        str: number;
+        dex: number;
+        con: number;
+        int: number;
+        wis: number;
+        cha: number;
+    };
     hp: number;
     maxHp: number;
-    ac: number; // Armor Class
-    attributes: Record<Attribute, number>;
-    inventory: string[];
+    xp: number;
+    level: number;
 }
 
 export interface ChatMessage {
@@ -21,6 +27,8 @@ export interface ChatMessage {
 
 export interface GameState {
     character: Character | null;
-    messages: ChatMessage[];
-    isGameStarted: boolean;
+    inventory: string[];
+    gold: number;
+    location: string;
+    time: string;
 }
