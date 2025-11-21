@@ -14,18 +14,24 @@ export default function Home() {
   }
 
   return (
-    <>
-      <header className="p-4 border-b border-gray-800 bg-[#1a1a2e] flex justify-between items-center">
+    <div className="flex flex-col h-full">
+      {/* Fixed Header */}
+      <header className="flex-shrink-0 p-4 border-b border-gray-800 bg-[#1a1a2e] flex justify-between items-center">
         <h1 className="font-display text-xl text-gold">D&D AI Master</h1>
         <button className="text-xs text-gray-500 hover:text-white">Menu</button>
       </header>
 
-      <div className="sticky top-0 z-50 p-2 bg-[#050505]/90 backdrop-blur-md">
+      {/* Fixed Character Sheet */}
+      <div className="flex-shrink-0 p-2 bg-[#050505]/90 backdrop-blur-md border-b border-gray-800/50">
         <CharacterSheet />
       </div>
 
-      <ChatInterface />
+      {/* Scrollable Chat Area */}
+      <div className="flex-1 min-h-0">
+        <ChatInterface />
+      </div>
+
       <RollPrompt />
-    </>
+    </div>
   );
 }

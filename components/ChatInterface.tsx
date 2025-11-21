@@ -128,10 +128,8 @@ export default function ChatInterface() {
     };
 
     return (
-        <div className="flex-1 flex flex-col min-h-0 relative">
-            <div
-                className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-hide"
-            >
+        <div className="h-full flex flex-col">
+            <div className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-hide">
                 {messages.map((msg) => {
                     const isUser = msg.role === 'user';
                     const isRoll = msg.type === 'roll';
@@ -175,12 +173,12 @@ export default function ChatInterface() {
                         </div>
                     );
                 })}
-                {/* Dynamic Spacer to push content up */}
-                <div className={`transition-all duration-300 ${pendingRoll ? 'h-72' : 'h-36'}`} />
+                {/* Spacer for RollPrompt */}
+                <div className={`transition-all duration-300 ${pendingRoll ? 'h-72' : 'h-4'}`} />
                 <div ref={bottomRef} />
             </div>
 
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black/90 to-transparent pt-10">
+            <div className="flex-shrink-0 p-4 bg-gradient-to-t from-black via-black/90 to-transparent border-t border-white/5">
                 <form onSubmit={handleSubmit} className="relative">
                     <input
                         type="text"
