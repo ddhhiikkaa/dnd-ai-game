@@ -8,7 +8,11 @@ export async function POST(req: Request) {
   const { messages, gameState }: { messages: any[]; gameState: GameState } =
     await req.json();
 
-  const systemPrompt = `You are the Dungeon Master for a D&D 5e game. 
+  const scenarioContext = gameState.scenarioAtmosphere
+    ? `\n\nSCENARIO CONTEXT: ${gameState.scenarioAtmosphere}\nIncorporate this atmosphere and setting into your responses.`
+    : '';
+
+  const systemPrompt = `You are the Dungeon Master for a D&D 5e game set in ${gameState.location}.${scenarioContext}
     Your goal is to run an immersive, open-ended adventure.
     
     RULES:

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useGameStore } from '@/lib/store';
 import { Character, Attribute } from '@/lib/types';
 import { rollDice, getModifier } from '@/lib/dice';
+import { getRandomScenario, formatScenarioText } from '@/lib/starting-scenarios';
 
 const CLASSES = {
     Warrior: { hp: 12, items: ['Longsword', 'Chain Mail', 'Shield'] },
@@ -56,18 +57,24 @@ export default function CharacterCreation() {
             },
         };
 
+        // Select random starting scenario
+        const scenario = getRandomScenario();
+        const openingMessage = formatScenarioText(scenario.opening, name, charClass);
+
         setGameState({
             character: newChar,
             inventory: classData.items,
             gold: 10, // Starting gold
-            location: "Dungeon Entrance",
-            time: "Day",
+            location: scenario.location,
+            time: scenario.timeOfDay,
+            scenarioId: scenario.id,
+            scenarioAtmosphere: scenario.atmosphere,
         });
 
         addMessage({
             id: 'init',
             role: 'assistant',
-            content: `Welcome, ${name} the ${charClass}. You stand at the entrance of the dungeon. The air is cold and stale. What do you do?`
+            content: openingMessage
         });
 
         startGame();

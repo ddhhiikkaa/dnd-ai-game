@@ -31,4 +31,6 @@ export interface GameState {
     gold: number;
     location: string;
     time: string;
+    scenarioId?: string; // Which scenario was selected
+    scenarioAtmosphere?: string; // For AI context about the setting
 }
