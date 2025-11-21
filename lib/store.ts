@@ -40,11 +40,21 @@ export const useGameStore = create<GameStore>((set) => ({
         })),
     updateHP: (amount) =>
         set((state) => {
-            if (!state.gameState.character) return state;
+            if (!state.gameState.character) {
+                console.log('[DEBUG] updateHP called but no character exists');
+                return state;
+            }
+            const currentHP = state.gameState.character.hp;
             const newHP = Math.min(
                 state.gameState.character.maxHp,
                 Math.max(0, state.gameState.character.hp + amount)
             );
+            console.log('[DEBUG] HP Update:', {
+                amount,
+                currentHP,
+                newHP,
+                maxHp: state.gameState.character.maxHp
+            });
             return {
                 gameState: {
                     ...state.gameState,

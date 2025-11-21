@@ -60,6 +60,8 @@ export default function ChatInterface() {
                 content: '...',
             });
 
+            const parsedTags = new Set<string>();
+
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
@@ -71,31 +73,48 @@ export default function ChatInterface() {
 
                 // Parse Roll Tags
                 const rollMatch = aiContent.match(/\[ROLL:([^:]+):([^\]]+)\]/);
-                if (rollMatch) {
+                if (rollMatch && !parsedTags.has(rollMatch[0])) {
                     const [, dice, reason] = rollMatch;
                     setPendingRoll({ dice, reason });
+                    parsedTags.add(rollMatch[0]);
                 }
 
-                // Parse Stat Updates
+                // Parse Stat Updates from accumulated content
                 // HP
-                const hpMatch = chunk.match(/\[HP:(-?\d+)\]/);
-                if (hpMatch) updateHP(parseInt(hpMatch[1]));
+                const hpMatch = aiContent.match(/\[HP:(-?\d+)\]/);
+                if (hpMatch && !parsedTags.has(hpMatch[0])) {
+                    console.log('[DEBUG] HP tag found:', hpMatch[0], 'Amount:', hpMatch[1]);
+                    updateHP(parseInt(hpMatch[1]));
+                    parsedTags.add(hpMatch[0]);
+                }
 
                 // XP
-                const xpMatch = chunk.match(/\[XP:(\d+)\]/);
-                if (xpMatch) addXP(parseInt(xpMatch[1]));
+                const xpMatch = aiContent.match(/\[XP:(\d+)\]/);
+                if (xpMatch && !parsedTags.has(xpMatch[0])) {
+                    addXP(parseInt(xpMatch[1]));
+                    parsedTags.add(xpMatch[0]);
+                }
 
                 // Gold
-                const goldMatch = chunk.match(/\[GOLD:(-?\d+)\]/);
-                if (goldMatch) updateGold(parseInt(goldMatch[1]));
+                const goldMatch = aiContent.match(/\[GOLD:(-?\d+)\]/);
+                if (goldMatch && !parsedTags.has(goldMatch[0])) {
+                    updateGold(parseInt(goldMatch[1]));
+                    parsedTags.add(goldMatch[0]);
+                }
 
                 // Item Add
-                const itemAddMatch = chunk.match(/\[ITEM:add:([^\]]+)\]/);
-                if (itemAddMatch) addItem(itemAddMatch[1]);
+                const itemAddMatch = aiContent.match(/\[ITEM:add:([^\]]+)\]/);
+                if (itemAddMatch && !parsedTags.has(itemAddMatch[0])) {
+                    addItem(itemAddMatch[1]);
+                    parsedTags.add(itemAddMatch[0]);
+                }
 
                 // Item Remove
-                const itemRemoveMatch = chunk.match(/\[ITEM:remove:([^\]]+)\]/);
-                if (itemRemoveMatch) removeItem(itemRemoveMatch[1]);
+                const itemRemoveMatch = aiContent.match(/\[ITEM:remove:([^\]]+)\]/);
+                if (itemRemoveMatch && !parsedTags.has(itemRemoveMatch[0])) {
+                    removeItem(itemRemoveMatch[1]);
+                    parsedTags.add(itemRemoveMatch[0]);
+                }
             }
         } catch (error) {
             console.error("AI Error:", error);
