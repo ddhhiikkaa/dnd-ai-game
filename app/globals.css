@@ -152,7 +152,7 @@ textarea {
 }
 
 /* Animations */
-@keyframes fadeIn {
+@keyframes fade-in {
   from {
     opacity: 0;
     transform: translateY(10px);
@@ -164,27 +164,79 @@ textarea {
   }
 }
 
-@keyframes slideInRight {
+@keyframes slide-up {
   from {
     opacity: 0;
-    transform: translateX(20px);
+    transform: translateY(20px);
   }
 
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
   }
 }
 
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
+/* Dice Animations */
+@keyframes dice-tumble {
+  0% {
+    transform: rotate3d(1, 1, 1, 0deg) scale(1);
   }
 
-  to {
+  25% {
+    transform: rotate3d(1, 1, 1, 90deg) scale(1.1);
+  }
+
+  50% {
+    transform: rotate3d(1, 1, 1, 180deg) scale(0.9);
+  }
+
+  75% {
+    transform: rotate3d(1, 1, 1, 270deg) scale(1.05);
+  }
+
+  100% {
+    transform: rotate3d(1, 1, 1, 360deg) scale(1);
+  }
+}
+
+@keyframes number-reveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-10deg);
+  }
+
+  60% {
     opacity: 1;
-    transform: translateX(0);
+    transform: scale(1.15) rotate(2deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes success-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(34, 197, 94, 0.8);
+  }
+}
+
+@keyframes failure-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(239, 68, 68, 0.8);
   }
 }
 
