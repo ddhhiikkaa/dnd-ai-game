@@ -14,6 +14,7 @@ export interface Character {
     hp: number;
     maxHp: number;
     xp: number;
+    ac: number;
     level: number;
 }
 

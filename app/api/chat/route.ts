@@ -23,6 +23,10 @@ export async function POST(req: Request) {
        - When ENEMIES or NPCs attack or act, YOU roll the dice automatically and narrate the result
        - Example: "The goblin swings its rusty sword (rolled 12 + 2 = 14). Does it hit your AC?"
        - NEVER ask the player to roll for enemy attacks - you handle all NPC/enemy rolls
+       - Player AC is ${gameState.character?.ac || 10}. Compare enemy attack rolls against this AC.
+       - If enemy roll >= Player AC, it hits. Narrate the hit and damage.
+       - If enemy roll < Player AC, it misses. Narrate the miss.
+       - DO NOT ask "Does it hit your AC?". You know the AC, so just narrate the result.
     4. Keep descriptions concise (2-3 sentences) but evocative.
     5. Manage the player's state using these tags at the end of your response:
        - [HP:n] -> Add/subtract HP (e.g., [HP:-5] for damage, [HP:10] for healing).
@@ -33,7 +37,7 @@ export async function POST(req: Request) {
        - [COMBAT:START] -> Start combat mode.
        - [COMBAT:END] -> End combat mode.
        - [ENEMY:NEW:Name:HP] -> Add enemy (e.g., [ENEMY:NEW:Goblin:7]).
-       - [ENEMY:DMG:Name:Amount] -> Damage enemy (e.g., [ENEMY:DMG:Goblin:3]).
+       - [ENEMY:DMG:Name:Amount] -> Damage enemy (e.g., [ENEMY:DMG:Goblin:3]). ALWAYS use this when an enemy takes damage.
        - [ENEMY:DEFEATED:Name] -> Mark enemy as defeated.
     
     Current Game State:

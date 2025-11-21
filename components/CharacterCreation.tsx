@@ -7,10 +7,10 @@ import { rollDice, getModifier } from '@/lib/dice';
 import { getRandomScenario, formatScenarioText } from '@/lib/starting-scenarios';
 
 const CLASSES = {
-    Warrior: { hp: 12, items: ['Longsword', 'Chain Mail', 'Shield'] },
-    Mage: { hp: 6, items: ['Staff', 'Robes', 'Spellbook'] },
-    Rogue: { hp: 8, items: ['Daggers (2)', 'Leather Armor', 'Thieves Tools'] },
-    Cleric: { hp: 10, items: ['Mace', 'Scale Mail', 'Holy Symbol'] },
+    Warrior: { hp: 12, items: ['Longsword', 'Chain Mail', 'Shield'], ac: 16 },
+    Mage: { hp: 6, items: ['Staff', 'Robes', 'Spellbook'], ac: 12 },
+    Rogue: { hp: 8, items: ['Daggers (2)', 'Leather Armor', 'Thieves Tools'], ac: 14 },
+    Cleric: { hp: 10, items: ['Mace', 'Scale Mail', 'Holy Symbol'], ac: 15 },
 };
 
 export default function CharacterCreation() {
@@ -47,6 +47,7 @@ export default function CharacterCreation() {
             hp: maxHp,
             maxHp: maxHp,
             xp: 0,
+            ac: classData.ac,
             stats: {
                 str: attributes.STR,
                 dex: attributes.DEX,

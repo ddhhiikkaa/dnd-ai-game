@@ -24,13 +24,24 @@ export default function Home() {
         <SaveIndicator />
       </header>
 
-      {/* Combat Tracker Overlay */}
-      <CombatTracker />
-
       <div className="flex-1 overflow-hidden relative flex flex-col">
-        {/* Character Sheet */}
-        <div className="flex-shrink-0 p-2 bg-gray-900/90 backdrop-blur-md border-b border-gray-800/50 z-10">
-          <CharacterSheet />
+        {/* Split Screen Container */}
+        <div className="flex-shrink-0 flex border-b border-gray-800/50 bg-gray-900/90 backdrop-blur-md z-10 transition-all duration-500 ease-in-out"
+          style={{ height: useGameStore.getState().gameState.combat.isActive ? '40%' : 'auto' }}>
+
+          {/* Character Sheet - Full width or Half width */}
+          <div className={`transition-all duration-500 ease-in-out overflow-y-auto custom-scrollbar
+              ${useGameStore.getState().gameState.combat.isActive ? 'w-1/2 border-r border-gray-800' : 'w-full'}
+          `}>
+            <CharacterSheet />
+          </div>
+
+          {/* Combat Tracker - Half width when active */}
+          {useGameStore.getState().gameState.combat.isActive && (
+            <div className="w-1/2 h-full">
+              <CombatTracker />
+            </div>
+          )}
         </div>
 
         {/* Chat Interface */}
