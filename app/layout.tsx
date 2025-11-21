@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Cinzel } from "next/font/google";
 import "./globals.css";
-import ViewportManager from "@/components/ViewportManager";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const cinzel = Cinzel({ subsets: ["latin"], variable: "--font-cinzel" });
@@ -11,7 +10,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  interactiveWidget: "resizes-content",
+  interactiveWidget: "resizes-visual",
 };
 
 export const metadata: Metadata = {
@@ -27,7 +26,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${cinzel.variable}`}>
-        <ViewportManager />
         <main className="app-container">
           {children}
         </main>
