@@ -5,6 +5,7 @@ import CharacterSheet from '@/components/CharacterSheet';
 import ChatInterface from '@/components/ChatInterface';
 import CharacterCreation from '@/components/CharacterCreation';
 import RollPrompt from '@/components/RollPrompt';
+import SaveIndicator from '@/components/SaveIndicator';
 
 export default function Home() {
   const { isGameStarted } = useGameStore();
@@ -31,6 +32,7 @@ export default function Home() {
         <ChatInterface />
       </div>
 
+      <SaveIndicator />
       <RollPrompt />
     </div>
   );

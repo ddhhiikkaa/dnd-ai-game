@@ -71,6 +71,22 @@ export default function CharacterSheet() {
                             Gold <span className="text-gold font-bold ml-1">{useGameStore.getState().gameState.gold}</span>
                         </div>
                     </div>
+
+                    {/* New Game Button */}
+                    <div className="mt-4 pt-4 border-t border-white/5">
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (confirm('Start a new adventure? This will delete your current character and all progress.')) {
+                                    useGameStore.getState().resetGame();
+                                    window.location.reload();
+                                }
+                            }}
+                            className="w-full px-3 py-2 text-xs text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg hover:bg-red-500/20 hover:border-red-500/50 transition-colors"
+                        >
+                            🔄 Start New Game
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
