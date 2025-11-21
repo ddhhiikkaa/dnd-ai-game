@@ -9,7 +9,6 @@ export default function RollPrompt() {
     const { pendingRoll, setPendingRoll, addMessage } = useGameStore();
     const [isRolling, setIsRolling] = useState(false);
     const [result, setResult] = useState<number | null>(null);
-    const [showExplanation, setShowExplanation] = useState(false);
 
     if (!pendingRoll) return null;
 
@@ -131,32 +130,6 @@ export default function RollPrompt() {
                                         {result}
                                     </div>
                                 </div>
-                            </div>
-                        )}
-
-                        {/* Learn More Toggle */}
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setShowExplanation(!showExplanation);
-                            }}
-                            className="mt-2 text-[10px] text-gray-500 hover:text-purple-400 transition-colors"
-                        >
-                            {showExplanation ? '▼' : '▶'} What does this mean?
-                        </button>
-
-                        {/* Explanation Panel */}
-                        {showExplanation && (
-                            <div className="mt-2 p-2 bg-black/40 rounded-lg text-[11px] text-gray-400 leading-relaxed animate-fade-in">
-                                <p className="mb-1">
-                                    <span className="text-white font-bold">{diceType}</span> means a {parsedDice.sides}-sided die.
-                                </p>
-                                <p className="mb-1">
-                                    The result is a random number between 1 and {parsedDice.sides}.
-                                </p>
-                                <p className="text-purple-300">
-                                    <span className="font-bold">{difficulty.label}</span> tasks typically need {difficulty.dc}+ to succeed.
-                                </p>
                             </div>
                         )}
                     </div>
