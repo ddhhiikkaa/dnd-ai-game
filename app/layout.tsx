@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Cinzel } from "next/font/google";
 import "./globals.css";
-import ViewportFix from "@/components/ViewportFix";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const cinzel = Cinzel({ subsets: ["latin"], variable: "--font-cinzel" });
@@ -27,7 +26,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${cinzel.variable}`}>
-        <ViewportFix />
         <main className="app-container">
           {children}
         </main>

@@ -129,7 +129,13 @@ export default function ChatInterface() {
 
     return (
         <div className="flex-1 flex flex-col min-h-0 relative">
-            <div className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-hide">
+            <div
+                className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-hide"
+                style={{
+                    WebkitOverflowScrolling: 'touch',
+                    touchAction: 'pan-y'
+                }}
+            >
                 {messages.map((msg) => {
                     const isUser = msg.role === 'user';
                     const isRoll = msg.type === 'roll';
