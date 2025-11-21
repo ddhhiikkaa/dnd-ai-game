@@ -14,6 +14,8 @@ interface GameStore {
     updateGold: (amount: number) => void;
     addItem: (item: string) => void;
     removeItem: (item: string) => void;
+    isGameStarted: boolean;
+    startGame: () => void;
 }
 
 export const useGameStore = create<GameStore>((set) => ({
@@ -84,4 +86,6 @@ export const useGameStore = create<GameStore>((set) => ({
                 inventory: state.gameState.inventory.filter((i) => i !== item),
             },
         })),
+    isGameStarted: false,
+    startGame: () => set({ isGameStarted: true }),
 }));

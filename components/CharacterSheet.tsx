@@ -5,7 +5,7 @@ import { getModifier } from '@/lib/dice';
 import { useState } from 'react';
 
 export default function CharacterSheet() {
-    const character = useGameStore((state) => state.character);
+    const character = useGameStore((state) => state.gameState.character);
     const [isExpanded, setIsExpanded] = useState(false);
 
     if (!character) return null;
@@ -52,7 +52,7 @@ export default function CharacterSheet() {
             {isExpanded && (
                 <div className="p-4 pt-0 border-t border-white/5 animate-fade-in">
                     <div className="grid grid-cols-3 gap-2 mt-4">
-                        {Object.entries(character.attributes).map(([attr, score]) => (
+                        {Object.entries(character.stats).map(([attr, score]) => (
                             <div key={attr} className="bg-black/40 p-2 rounded-lg border border-white/5 text-center hover:border-purple-500/30 transition-colors">
                                 <div className="text-[10px] text-gray-500 uppercase tracking-wider">{attr}</div>
                                 <div className="font-bold text-white text-lg">{score}</div>
@@ -65,10 +65,10 @@ export default function CharacterSheet() {
 
                     <div className="mt-4 flex gap-2 text-xs text-gray-400">
                         <div className="bg-black/40 px-3 py-1 rounded-full border border-white/5">
-                            AC <span className="text-white font-bold ml-1">{character.ac}</span>
+                            AC <span className="text-white font-bold ml-1">{10 + getModifier(character.stats.dex)}</span>
                         </div>
                         <div className="bg-black/40 px-3 py-1 rounded-full border border-white/5">
-                            Gold <span className="text-gold font-bold ml-1">0</span>
+                            Gold <span className="text-gold font-bold ml-1">{useGameStore.getState().gameState.gold}</span>
                         </div>
                     </div>
                 </div>

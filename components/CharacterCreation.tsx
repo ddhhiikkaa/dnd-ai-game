@@ -13,7 +13,7 @@ const CLASSES = {
 };
 
 export default function CharacterCreation() {
-    const { setCharacter, startGame, addMessage } = useGameStore();
+    const { setGameState, startGame, addMessage } = useGameStore();
     const [step, setStep] = useState<1 | 2 | 3>(1);
     const [name, setName] = useState('');
     const [charClass, setCharClass] = useState<keyof typeof CLASSES | ''>('');
@@ -45,12 +45,24 @@ export default function CharacterCreation() {
             level: 1,
             hp: maxHp,
             maxHp: maxHp,
-            ac: 10 + getModifier(attributes.DEX), // Base AC calculation
-            attributes,
-            inventory: classData.items,
+            xp: 0,
+            stats: {
+                str: attributes.STR,
+                dex: attributes.DEX,
+                con: attributes.CON,
+                int: attributes.INT,
+                wis: attributes.WIS,
+                cha: attributes.CHA,
+            },
         };
 
-        setCharacter(newChar);
+        setGameState({
+            character: newChar,
+            inventory: classData.items,
+            gold: 10, // Starting gold
+            location: "Dungeon Entrance",
+            time: "Day",
+        });
 
         addMessage({
             id: 'init',
@@ -97,8 +109,8 @@ export default function CharacterCreation() {
                                     key={c}
                                     onClick={() => setCharClass(c)}
                                     className={`p-3 rounded border ${charClass === c
-                                            ? 'border-purple-500 bg-purple-900/20 text-white'
-                                            : 'border-gray-700 bg-[#1a1a2e] text-gray-400 hover:border-gray-500'
+                                        ? 'border-purple-500 bg-purple-900/20 text-white'
+                                        : 'border-gray-700 bg-[#1a1a2e] text-gray-400 hover:border-gray-500'
                                         }`}
                                 >
                                     {c}
