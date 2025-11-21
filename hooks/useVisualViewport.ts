@@ -1,25 +1,37 @@
-import { useEffect, useState } from 'react';
+'use client';
+
+import { useState, useEffect } from 'react';
 
 export function useVisualViewport() {
-    const [height, setHeight] = useState<number | null>(null);
+    const [viewportHeight, setViewportHeight] = useState<number>(0);
+    const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
 
     useEffect(() => {
-        // Only run on client
-        if (typeof window === 'undefined' || !window.visualViewport) return;
+        if (typeof window === 'undefined' || !window.visualViewport) {
+            setViewportHeight(window.innerHeight);
+            return;
+        }
 
         const handleResize = () => {
-            setHeight(window.visualViewport?.height ?? window.innerHeight);
+            const viewport = window.visualViewport!;
+            const windowHeight = window.innerHeight;
+            const viewportHeightValue = viewport.height;
+
+            setViewportHeight(viewportHeightValue);
+            // Keyboard height is the difference between window and visual viewport
+            setKeyboardHeight(Math.max(0, windowHeight - viewportHeightValue));
         };
 
-        window.visualViewport.addEventListener('resize', handleResize);
+        handleResize(); // Initial call
 
-        // Initial set
-        handleResize();
+        window.visualViewport.addEventListener('resize', handleResize);
+        window.visualViewport.addEventListener('scroll', handleResize);
 
         return () => {
             window.visualViewport?.removeEventListener('resize', handleResize);
+            window.visualViewport?.removeEventListener('scroll', handleResize);
         };
     }, []);
 
-    return height;
+    return { viewportHeight, keyboardHeight };
 }
